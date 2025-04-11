@@ -1,4 +1,17 @@
-import pandas, datetime
-dataframe =pandas.read_csv("test.csv")
-dataframe["age"]=dataframe.apply(lambda x: datetime.datetime.now().year - pandas.to_datetime(x['col_c']).year - 1 if datetime.datetime.now().month <= pandas.to_datetime(x['col_c']).month and datetime.datetime.now().day < pandas.to_datetime(x['col_c']).day else datetime.datetime.now().year - pandas.to_datetime(x['col_c']).year, axis=1)  
-dataframe.to_csv("testfinal.csv")
+import pandas as pd
+from datetime import datetime
+
+
+def get_age(birthday):
+    today = datetime.now()
+    if today.month <= birthday.month and today.day < birthday.day:
+        return today.year - birthday.year - 1
+    else:
+        return today.year - birthday.year
+
+
+df = pd.read_csv("data/raw/test.csv")
+
+df["age"] = df.apply(lambda x: get_age(pd.to_datetime(x['col_c'])), axis=1)
+
+df.to_csv("data/processed/est_01.csv")
